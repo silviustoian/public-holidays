@@ -6,13 +6,61 @@ import { useQuery } from "@tanstack/react-query";
 export default function Home() {
   const [year, setYear] = useState(2025);
   const [country, setCountry] = useState("RO");
+  const [open, setOpen] = useState([]);
   const { data, isLoading, isError, refetch } = useQuery({
     queryKey: ["holidays", year, country],
     queryFn: () => fetchHolidays(year, country),
     enabled: false,
   });
+
+  const faqs = [
+    {
+      question: "What is this app about?",
+      answer:
+        "It's a fast and modern tool to check public holidays in your country.",
+    },
+    {
+      question: "Is it free to use?",
+      answer: "Yes, 100% free. No login or subscription required.",
+    },
+    {
+      question: "Can I use it for any country?",
+      answer: "We support over 100 countries via a public API.",
+    },
+    {
+      question: "Can I contribute?",
+      answer: "The app is open-source. You can contribute on GitHub.",
+    },
+  ];
+
+  const toggleItem = (index) => {
+    if (open.includes(index)) {
+      setOpen(open.filter((i) => i !== index));
+    } else {
+      setOpen([...open, index]);
+    }
+  };
   return (
     <div>
+      <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+      <div className="max-w-xl mx-auto mt-10">
+        <h2 className="text-2xl font-bold mb-6">Frequently Asked Questions</h2>
+        {faqs.map((item, index) => (
+          <div key={index} className="border-b py-4">
+            <button
+              onClick={() => toggleItem(index)}
+              className="w-full text-left font-medium text-lg flex justify-between items-center"
+            >
+              {item.question}
+              <span>{open.includes(index) ? "−" : "+"}</span>
+            </button>
+            {open.includes(index) && (
+              <p className="mt-2 text-gray-600">{item.answer}</p>
+            )}
+          </div>
+        ))}
+      </div>
+
       <select
         className="py-2 px-10 mr-2 rounded"
         value={year}
